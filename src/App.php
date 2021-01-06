@@ -76,7 +76,7 @@ class App
             foreach ($postsToPost as $postToPost) {
                 echo PHP_EOL . 'Posting ' . $postToPost['title'] . ' ...';
 
-                $youtubeTags = json_decode($postToPost['tags']);
+                $youtubeTags = json_decode($postToPost['tags']) ?? [];
                 $mediumTags = [];
                 
                 if (count($youtubeTags) <= 5) {
