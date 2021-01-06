@@ -1,0 +1,21 @@
+{
+    "name": "pierreminiggio/youtube-to-medium",
+    "authors": [
+        {
+            "name": "Pierre MINIGGIO",
+            "email": "pierre@miniggiodev.fr"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "PierreMiniggio\\YoutubeToMedium\\": "src/"
+        }
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "require": {
+        "illuminate/support": "^8.21",
+        "pierreminiggio/database-connection": "^1.2"
+    }
+}
