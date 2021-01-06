@@ -2,7 +2,6 @@
 
 namespace PierreMiniggio\YoutubeToMedium;
 
-use Illuminate\Support\Str;
 use PierreMiniggio\YoutubeToMedium\Connection\DatabaseConnectionFactory;
 use PierreMiniggio\YoutubeToMedium\Repository\LinkedChannelRepository;
 use PierreMiniggio\YoutubeToMedium\Repository\NonUploadedVideoRepository;
@@ -129,10 +128,9 @@ class App
         
                 $description = '<p>' . implode('</p><p>', $this->breakLines($description)) . '</p>';
                 $description = '<h1>' . $postToPost['title'] . '</h1>'
-                    . '<figure class="media"><oembed url="' . $postToPost['url'] . '"></oembed></figure>'
+                    . '<iframe src="' . $postToPost['url'] . '"></iframe>'
                     . $description
                 ;
-
 
                 $curl = curl_init();
                 curl_setopt_array($curl, [
@@ -143,9 +141,10 @@ class App
                         'title' => $postToPost['title'],
                         'contentFormat' => 'html',
                         'content' => $description,
-                        'canonicalUrl' => 'http://jamietalbot.com/posts/' . Str::slug($postToPost['title']),
+                        'canonicalUrl' => $postToPost['url'],
                         'tags' => $mediumTags,
-                        'publishStatus' => 'public'
+                        'publishStatus' => 'public',
+                        'notifyFollowers' => true
                     ]),
                     CURLOPT_HTTPHEADER => [
                         'Content-Type: application/json',
@@ -154,11 +153,14 @@ class App
                 ]);
 
                 $curlResult = curl_exec($curl);
-                var_dump($curlResult); die();
                 $res = json_decode($curlResult, true);
 
-                if (isset($res['id'])) {
-                    $videoToUploadRepository->insertVideoIfNeeded($res['id'], $linkedChannel['w_id'], $postToPost['id']);
+                if (isset($res['data']) && isset($res['data']['id'])) {
+                    $videoToUploadRepository->insertVideoIfNeeded(
+                        $res['data']['id'],
+                        $linkedChannel['w_id'],
+                        $postToPost['id']
+                    );
                     echo PHP_EOL . $postToPost['title'] . ' posted !';
                 } else {
                     echo PHP_EOL . 'Error while posting ' . $postToPost['title'] . ':' . $curlResult;

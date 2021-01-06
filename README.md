@@ -128,7 +128,10 @@ ALTER TABLE `medium_post`
 -- AUTO_INCREMENT pour la table `medium_post_youtube_video`
 --
 ALTER TABLE `medium_post_youtube_video`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;COMMIT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  
+ALTER TABLE `medium_post` CHANGE `post_id` `post_id` TEXT NOT NULL;
+COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
