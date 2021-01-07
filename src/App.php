@@ -34,6 +34,8 @@ class App
             return $code;
         }
 
+        $doneForMediumAccounts = [];
+
         foreach ($linkedChannels as $linkedChannel) {
             echo PHP_EOL . PHP_EOL . 'Checking medium website ' . $linkedChannel['w_id'] . '...';
 
@@ -74,6 +76,11 @@ class App
             $mediumAccountId = $accountIdJsonResult['data']['id'];
             
             foreach ($postsToPost as $postToPost) {
+                if (in_array($linkedChannel['w_id'], $doneForMediumAccounts)) {
+                    echo PHP_EOL . 'Can\'t post anymore today on medium website ' . $linkedChannel['w_id'];
+                    break;
+                }
+
                 echo PHP_EOL . 'Posting ' . $postToPost['title'] . ' ...';
 
                 $youtubeTags = json_decode($postToPost['tags']) ?? [];
@@ -164,6 +171,19 @@ class App
                     echo PHP_EOL . $postToPost['title'] . ' posted !';
                 } else {
                     echo PHP_EOL . 'Error while posting ' . $postToPost['title'] . ':' . $curlResult;
+
+                    if (! empty($res['errors'])) {
+                        $errors = $res['errors'];
+
+                        foreach ($errors as $error) {
+
+                            // Done publishing for today
+                            if (isset($error['code']) && $error['code'] === 1007) {
+                                $doneForMediumAccounts[] = $linkedChannel['w_id'];
+                                break;
+                            }
+                        }
+                    }
                 }
             }
 
