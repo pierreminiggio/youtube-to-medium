@@ -20,6 +20,7 @@ class LinkedChannelRepository
             FROM medium_website as w
             RIGHT JOIN medium_website_youtube_channel as mwyc
                 ON w.id = mwyc.medium_id
+            LIMIT 1
         ', []);
         $this->connection->stop();
 

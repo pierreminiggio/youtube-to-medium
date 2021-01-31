@@ -41,6 +41,7 @@ class NonUploadedVideoRepository
             
             WHERE y.channel_id = :channel_id
             ' . ($postedWebsitePostIds ? 'AND mpyv.id IS NULL' : '') . '
+            LIMIT 1
             ;
         ', [
             'channel_id' => $youtubeChannelId
